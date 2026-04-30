@@ -79,6 +79,7 @@ export default function Diary() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <Link to="/dashboard" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Dashboard</Link>
           <Link to="/diary" style={{ color: '#22c55e', textDecoration: 'none', fontSize: 14 }}>Diary</Link>
+          <Link to="/profile" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Profile</Link>
           <button onClick={logout} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer' }}>Log out</button>
         </div>
       </div>
@@ -131,7 +132,7 @@ export default function Diary() {
               </button>
             </form>
 
-            <div style={{ maxHeight: 240, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div style={{ maxHeight: 300, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
               {searchResults.map(food => (
                 <div
                   key={food.id}
@@ -140,7 +141,7 @@ export default function Diary() {
                 >
                   <div>
                     <p style={{ margin: 0, fontSize: 14, color: '#e2e8f0' }}>{food.name}</p>
-                    <p style={{ margin: 0, fontSize: 12, color: '#64748b' }}>{food.calories_per100} kcal per 100g</p>
+                    <p style={{ margin: 0, fontSize: 12, color: '#64748b' }}>{food.calories_per100} kcal · {food.protein_per100}g P per 100g</p>
                   </div>
                   {selectedFood?.id === food.id && <span style={{ color: '#22c55e', fontWeight: 700 }}>✓</span>}
                 </div>
@@ -190,10 +191,10 @@ export default function Diary() {
                   {entries.length === 0
                     ? <p style={{ color: '#475569', fontSize: 13 }}>Nothing logged</p>
                     : entries.map(entry => (
-                      <div key={entry.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #1e293b' }}>
+                      <div key={entry.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #0f172a' }}>
                         <div>
-                          <p style={{ margin: 0, fontSize: 14, color: '#e2e8f0' }}>{entry.meal_type}</p>
-                          <p style={{ margin: 0, fontSize: 12, color: '#64748b' }}>{entry.calories} kcal · {entry.protein.toFixed(1)}g P</p>
+                          <p style={{ margin: 0, fontSize: 14, color: '#e2e8f0' }}>{entry.food_name || entry.meal_type}</p>
+                          <p style={{ margin: 0, fontSize: 12, color: '#64748b' }}>{entry.calories} kcal · {entry.protein.toFixed(1)}g P · {entry.carbs.toFixed(1)}g C · {entry.fat.toFixed(1)}g F</p>
                         </div>
                         <button onClick={() => handleDelete(entry.id)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: 16 }}>✕</button>
                       </div>
