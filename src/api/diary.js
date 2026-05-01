@@ -30,3 +30,18 @@ export const getStreak = async () => {
   const response = await client.get('/progress/streak')
   return response.data
 }
+
+export const logWater = async (amount_ml) => {
+  const response = await client.post('/logs/water/', { amount_ml })
+  return response.data
+}
+
+export const getWaterToday = async () => {
+  const response = await client.get('/logs/water/')
+  return response.data
+}
+
+export const getProgressRange = async (start, end) => {
+  const response = await client.get('/progress/range', { params: { start, end } })
+  return response.data
+}

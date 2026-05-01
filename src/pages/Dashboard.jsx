@@ -37,6 +37,7 @@ export default function Dashboard() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <Link to="/dashboard" style={{ color: '#22c55e', textDecoration: 'none', fontSize: 14 }}>Dashboard</Link>
           <Link to="/diary" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Diary</Link>
+          <Link to="/progress" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Progress</Link>
           <Link to="/profile" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Profile</Link>
           <button onClick={logout} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer' }}>Log out</button>
         </div>
@@ -83,7 +84,7 @@ export default function Dashboard() {
                     ? <p style={{ color: '#475569', fontSize: 13, margin: 0 }}>Nothing logged yet</p>
                     : entries.map(e => (
                       <div key={e.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#94a3b8', padding: '4px 0', borderTop: '1px solid #334155' }}>
-                        <span>{e.meal_type}</span>
+                        <span>{e.food_name || e.meal_type}</span>
                         <span>{e.calories} kcal</span>
                       </div>
                     ))

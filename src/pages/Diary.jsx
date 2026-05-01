@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { logout } from '../api/auth'
-import { getDiarySummary, searchFoods, logFood, deleteLog } from '../api/diary'
+import { getDiarySummary, searchFoods, logFood, deleteLog, logWater, getWaterToday } from '../api/diary'
 
 export default function Diary() {
   const { user } = useAuth()
@@ -15,11 +15,19 @@ export default function Diary() {
   const [selectedFood, setSelectedFood] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [logging, setLogging] = useState(false)
+  const [waterAmount, setWaterAmount] = useState(250)
+  const [waterTotal, setWaterTotal] = useState(0)
+  const [loggingWater, setLoggingWater] = useState(false)
 
   const fetchDiary = async () => {
     try {
-      const data = await getDiarySummary()
-      setDiary(data)
+      const [diaryData, waterData] = await Promise.all([
+        getDiarySummary(),
+        getWaterToday()
+      ])
+      setDiary(diaryData)
+      const total = waterData.reduce((sum, log) => sum + log.amount_ml, 0)
+      setWaterTotal(total)
     } catch (err) {
       console.error(err)
     } finally {
@@ -69,8 +77,21 @@ export default function Diary() {
     }
   }
 
+  const handleLogWater = async (amount) => {
+    setLoggingWater(true)
+    try {
+      await logWater(amount)
+      await fetchDiary()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoggingWater(false)
+    }
+  }
+
   const meals = ['breakfast', 'lunch', 'dinner', 'snack']
   const emojis = { breakfast: '🌅', lunch: '☀️', dinner: '🌙', snack: '🍎' }
+  const waterPresets = [150, 250, 330, 500, 750]
 
   return (
     <div style={{ minHeight: '100vh', background: '#0f172a', color: '#fff' }}>
@@ -79,6 +100,7 @@ export default function Diary() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <Link to="/dashboard" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Dashboard</Link>
           <Link to="/diary" style={{ color: '#22c55e', textDecoration: 'none', fontSize: 14 }}>Diary</Link>
+          <Link to="/progress" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Progress</Link>
           <Link to="/profile" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Profile</Link>
           <button onClick={logout} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer' }}>Log out</button>
         </div>
@@ -94,6 +116,7 @@ export default function Diary() {
               { label: 'Protein', value: diary.totals.protein.toFixed(0) + 'g', color: '#3b82f6' },
               { label: 'Carbs', value: diary.totals.carbs.toFixed(0) + 'g', color: '#f59e0b' },
               { label: 'Fat', value: diary.totals.fat.toFixed(0) + 'g', color: '#ef4444' },
+              { label: 'Water', value: (waterTotal / 1000).toFixed(1) + 'L', color: '#06b6d4' },
             ].map(item => (
               <div key={item.label} style={{ background: '#1e293b', borderRadius: 10, padding: '12px 20px', border: '1px solid #334155' }}>
                 <p style={{ color: '#64748b', fontSize: 12, margin: '0 0 4px' }}>{item.label}</p>
@@ -102,6 +125,38 @@ export default function Diary() {
             ))}
           </div>
         )}
+
+        <div style={{ background: '#1e293b', borderRadius: 12, padding: 20, border: '1px solid #334155', marginBottom: 24 }}>
+          <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>💧 Log Water</h3>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+            {waterPresets.map(amount => (
+              <button
+                key={amount}
+                onClick={() => handleLogWater(amount)}
+                disabled={loggingWater}
+                style={{ background: '#0f172a', border: '1px solid #334155', color: '#94a3b8', padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}
+              >
+                {amount}ml
+              </button>
+            ))}
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <input
+                type="number"
+                value={waterAmount}
+                onChange={(e) => setWaterAmount(parseInt(e.target.value))}
+                style={{ width: 80, background: '#0f172a', border: '1px solid #334155', borderRadius: 8, padding: '8px 12px', color: '#fff', fontSize: 13 }}
+              />
+              <button
+                onClick={() => handleLogWater(waterAmount)}
+                disabled={loggingWater}
+                style={{ background: '#06b6d4', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
+              >
+                {loggingWater ? '...' : 'Add'}
+              </button>
+            </div>
+            <span style={{ color: '#64748b', fontSize: 13 }}>Today: {(waterTotal / 1000).toFixed(2)}L</span>
+          </div>
+        </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
           <div style={{ background: '#1e293b', borderRadius: 12, padding: 24, border: '1px solid #334155' }}>

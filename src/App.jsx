@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard'
 import Diary from './pages/Diary'
 import Profile from './pages/Profile'
 import Goals from './pages/Goals'
+import Progress from './pages/Progress'
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth()
@@ -25,6 +26,7 @@ function App() {
           <Route path="/diary" element={<PrivateRoute><Diary /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
           <Route path="/goals" element={<PrivateRoute><Goals /></PrivateRoute>} />
+          <Route path="/progress" element={<PrivateRoute><Progress /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
