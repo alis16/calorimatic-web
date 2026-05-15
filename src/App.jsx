@@ -7,6 +7,7 @@ import Diary from './pages/Diary'
 import Profile from './pages/Profile'
 import Goals from './pages/Goals'
 import Progress from './pages/Progress'
+import WeightLog from './pages/WeightLog'
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth()
@@ -27,6 +28,7 @@ function App() {
           <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
           <Route path="/goals" element={<PrivateRoute><Goals /></PrivateRoute>} />
           <Route path="/progress" element={<PrivateRoute><Progress /></PrivateRoute>} />
+          <Route path="/weight" element={<PrivateRoute><WeightLog /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
