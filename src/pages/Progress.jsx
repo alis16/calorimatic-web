@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { logout } from '../api/auth'
 import { getProgressRange, getStreak } from '../api/diary'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
 
 export default function Progress() {
+  const navigate = useNavigate()
   const [data, setData] = useState(null)
   const [streak, setStreak] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -22,6 +23,11 @@ export default function Progress() {
       .finally(() => setLoading(false))
   }, [period])
 
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#0f172a', color: '#fff' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', background: '#1e293b', borderBottom: '1px solid #334155' }}>
@@ -29,10 +35,11 @@ export default function Progress() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <Link to="/dashboard" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Dashboard</Link>
           <Link to="/diary" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Diary</Link>
+          <Link to="/exercise" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Exercise</Link>
+          <Link to="/recipes" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Recipes</Link>
           <Link to="/progress" style={{ color: '#22c55e', textDecoration: 'none', fontSize: 14 }}>Progress</Link>
-          <Link to="/weight" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Weight</Link>
           <Link to="/profile" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Profile</Link>
-          <button onClick={logout} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer' }}>Log out</button>
+          <button onClick={handleLogout} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer' }}>Log out</button>
         </div>
       </div>
 

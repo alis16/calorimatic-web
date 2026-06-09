@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { logout } from '../api/auth'
 import { getDiarySummary, searchFoods, logFood, deleteLog, logWater, getWaterToday } from '../api/diary'
 
 export default function Diary() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [diary, setDiary] = useState(null)
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -36,6 +37,11 @@ export default function Diary() {
   }
 
   useEffect(() => { fetchDiary() }, [])
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
 
   const handleSearch = async (e) => {
     e.preventDefault()
@@ -100,10 +106,11 @@ export default function Diary() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <Link to="/dashboard" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Dashboard</Link>
           <Link to="/diary" style={{ color: '#22c55e', textDecoration: 'none', fontSize: 14 }}>Diary</Link>
+          <Link to="/exercise" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Exercise</Link>
+          <Link to="/recipes" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Recipes</Link>
           <Link to="/progress" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Progress</Link>
-          <Link to="/weight" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Weight</Link>
           <Link to="/profile" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Profile</Link>
-          <button onClick={logout} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer' }}>Log out</button>
+          <button onClick={handleLogout} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer' }}>Log out</button>
         </div>
       </div>
 

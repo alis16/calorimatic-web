@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { logout } from '../api/auth'
 import { getProgress, getStreak, getDiarySummary } from '../api/diary'
 
 export default function Dashboard() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [progress, setProgress] = useState(null)
   const [streak, setStreak] = useState(null)
   const [diary, setDiary] = useState(null)
@@ -22,6 +23,11 @@ export default function Dashboard() {
       .finally(() => setLoading(false))
   }, [])
 
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
   if (loading) {
     return <div style={{ color: '#fff', padding: 40, textAlign: 'center' }}>Loading...</div>
   }
@@ -37,9 +43,11 @@ export default function Dashboard() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <Link to="/dashboard" style={{ color: '#22c55e', textDecoration: 'none', fontSize: 14 }}>Dashboard</Link>
           <Link to="/diary" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Diary</Link>
+          <Link to="/exercise" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Exercise</Link>
+          <Link to="/recipes" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Recipes</Link>
           <Link to="/progress" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Progress</Link>
           <Link to="/profile" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Profile</Link>
-          <button onClick={logout} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer' }}>Log out</button>
+          <button onClick={handleLogout} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer' }}>Log out</button>
         </div>
       </div>
 
